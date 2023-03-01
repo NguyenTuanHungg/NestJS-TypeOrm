@@ -16,7 +16,7 @@ export class User{
     @Column()
     email: string;
     @OneToMany(() => Order, (order) => order.user)
-    order:Order;
+    order:Order[];
     @OneToMany(()=>Cart,cart=>cart.user)
     cart:Cart[]
     @Column({type:'enum',enum:Role,default:Role.User})
