@@ -26,7 +26,7 @@ export class UserController {
         return this.userService.signIn(loginDto)
      }
      @UseGuards(JwtAuthGuard)
-     @Patch('change-password')
+     @Patch('change-password/:id')
      async ChangePassword( id:number,@Body() body:ChangePassword):Promise<UpdateResult>{
       return this.userService.changePassword(body,id)
      }
