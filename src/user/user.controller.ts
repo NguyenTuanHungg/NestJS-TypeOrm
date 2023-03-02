@@ -27,7 +27,7 @@ export class UserController {
      }
      @UseGuards(JwtAuthGuard)
      @Patch('change-password/:id')
-     async ChangePassword( id:number,@Body() body:ChangePassword):Promise<UpdateResult>{
+     async ChangePassword( @Param('id') id:number,@Body() body:ChangePassword):Promise<UpdateResult>{
       return this.userService.changePassword(body,id)
      }
     
