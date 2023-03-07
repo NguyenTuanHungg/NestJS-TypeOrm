@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Param,UseGuards,Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param,UseGuards,Delete,Patch,DeleteResult } from '@nestjs/common';
 import { Request } from 'express';
 import { Order } from './/Entity/order.entity';
 import { OrderService } from './order.service';
 import { User } from '../user/entity/user.entity';
 import {CreateOrderDto} from '..//order/dto/create-order.dto'
 import { JwtAuthGuard } from '..//user/auth/jwt-auth.guard';
-
+import {UpdateOrderDto} from './/dto/update-order.dto'
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -27,5 +27,10 @@ export class OrderController {
   @Delete(':id')
   async removeOrder(@Param('id')id: number): Promise<DeleteResult>{
     return this.orderService.removeOrder(id)
+  }
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateOrder(@Param('id')id: number,updateOrderDto:UpdateOrderDto){
+    return this.orderService.updateOrder(id,updateOrderDto)
   }
 }

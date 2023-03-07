@@ -7,7 +7,7 @@ import {CreateOrderDto} from '..//order/dto/create-order.dto'
 import { BookService } from '../book/book.service';
 import { User } from '../user/entity/user.entity';
 import {Book} from '..//book/entity/book.entity'
-
+import {UpdateOrderDto} from './/dto/update-order.dto'
 @Injectable()
 export class OrderService {
   
@@ -49,5 +49,11 @@ export class OrderService {
     return this.orderRepo.delete(id)
   }
 
-  
+  async updateOrder(id: number,updateOrderDto:UpdateOrderDto):Promise<UpdateResult>{
+    const order = await this.orderRepo.update({
+      id},
+      updateOrderDto,
+    );
+    return order;
+  }
 }
