@@ -22,8 +22,8 @@ export class CartController {
     }
     @UseGuards(JwtAuthGuard)
     @Post()
-    async addToCart(@Body() params: CreateCartDto,id:number): Promise<void> {
-    this.cartService.createCart(params);
+    async addToCart(@Body() params: CreateCartDto,totalPrice:number): Promise<void> {
+    this.cartService.createCart(params,totalPrice);
   }
     @UseGuards(JwtAuthGuard)
     @Delete(':id')

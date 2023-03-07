@@ -35,5 +35,5 @@ export class Cart{
     @Column() quantity: number;
     
     @IsNumber()
-    @Column() price: number;
+    @Column() totalPrice: number;
 }
