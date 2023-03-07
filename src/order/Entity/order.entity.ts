@@ -30,6 +30,9 @@ export class Order {
   createdAt: Date;
 
   @Column()
+  totalPrice: number;
+  
+  @Column()
   userId: number;
   @ManyToOne(() => User, user => user.order)
   @JoinColumn()

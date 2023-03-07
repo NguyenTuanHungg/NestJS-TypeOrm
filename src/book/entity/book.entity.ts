@@ -18,9 +18,12 @@ export class Book {
   description: string;
 
   @Column()
+  price: number;
+
+  @Column()
   publishedYear: number;
   @OneToMany(() => Cart,cart=>cart.book)
   @JoinColumn()
   cart:Cart
- 
+  
 }

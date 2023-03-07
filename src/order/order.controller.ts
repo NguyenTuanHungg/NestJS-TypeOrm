@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param,UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param,UseGuards,Delete } from '@nestjs/common';
 import { Request } from 'express';
 import { Order } from './/Entity/order.entity';
 import { OrderService } from './order.service';
@@ -11,9 +11,9 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
   @UseGuards(JwtAuthGuard)
   @Post()
-  async placeOrder(@Body()createOrderDto: CreateOrderDto): Promise<Order> {
+  async placeOrder(@Body()createOrderDto: CreateOrderDto,totalPrice:number): Promise<Order> {
     
-    const order = await this.orderService.placeOrder(createOrderDto);
+    const order = await this.orderService.placeOrder(createOrderDto,totalPrice);
     return order;
   }
   @UseGuards(JwtAuthGuard)
@@ -22,5 +22,10 @@ export class OrderController {
    
     const orders = await this.orderService.getOrders(userId);
     return orders;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async removeOrder(@Param('id')id: number): Promise<DeleteResult>{
+    return this.orderService.removeOrder(id)
   }
 }
