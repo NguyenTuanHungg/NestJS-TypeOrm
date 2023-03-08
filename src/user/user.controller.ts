@@ -1,5 +1,6 @@
-import { Repository,DeleteResult,UpdateResult, FindOneOptions } from 'typeorm';
-import { Controller, Post,Body,Param,Put,Patch, Request,Session,UseGuards } from '@nestjs/common';
+iimport { Repository,DeleteResult,UpdateResult, FindOneOptions } from 'typeorm';
+import { Controller, Post,Body,Param,Put,Patch,Session,UseGuards,Req,Res, HttpCode,HttpStatus} from '@nestjs/common';
+import { Request, Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import {LoginDto} from './dto/login-user.dto';
 import {UserService} from './user.service'
@@ -21,13 +22,30 @@ export class UserController {
      }
 
      @Post('signin')
-     async signIn(@Body() loginDto:LoginDto):Promise<{accessToken:string}>{
-        
-        return this.userService.signIn(loginDto)
-     }
+     async login(
+      @Body() loginUserDto: LoginDto,
+      @Res({ passthrough: true }) res: Response,
+    ) {
+      const result = await this.userService.signIn(loginUserDto);
+      res.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+  
+      return result;
+    }
+
      @UseGuards(JwtAuthGuard)
+     @Post('logout')
+     @HttpCode(HttpStatus.RESET_CONTENT)
+    async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+       
+
+         res.clearCookie('refreshToken');
+        }
+
      @Patch('change-password/:id')
-     async ChangePassword( @Param('id') id:number,@Body() body:ChangePassword):Promise<UpdateResult>{
+     async ChangePassword( id:number,@Body() body:ChangePassword):Promise<UpdateResult>{
       return this.userService.changePassword(body,id)
      }
     
