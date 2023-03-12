@@ -8,7 +8,9 @@ import {JwtService} from '@nestjs/jwt';
 import{LoginDto} from './dto/login-user.dto'
 import {ChangePassword} from './dto/chang-password.dto'
 import { AuthGuard } from '@nestjs/passport';
-
+import { randomBytes } from 'crypto';
+import * as moment from 'moment';
+import * as nodemailer from 'nodemailer';
 @Injectable()
 export class UserService {
     constructor(
@@ -61,7 +63,64 @@ export class UserService {
           );
        return change
       }
+      // send email
+      async sendPasswordResetEmail(email: string): Promise<boolean> {
+        const user = await this.usersRepo.findOne({where:{ email }});
+        if (!user) {
+          throw new Error('User not found');
+        }
+    
+        const resetToken = randomBytes(20).toString('hex');
+        const resetExpires = moment().add(1, 'hour').toDate();
+    
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = resetExpires;
+        await this.usersRepo.save(user);
+    
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'nguyentuanhung26072001@gmail.com',
+            pass: 'orqaurpcyaokbddg',
+          },
+          tls: {
+            rejectUnauthorized: false
+          }
+        });
+    
+        const mailOptions = {
+          from: 'Your Name <nguyentuanhung26072001@gmail.com>',
+          to: user.email,
+          subject: 'Password Reset Request',
+          text: `You are receiving this email because you (or someone else) has requested to reset your password. Please click on the following link, or paste this into your browser to complete the process:\n\n${process.env.CLIENT_URL}/reset-password?token=${resetToken}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`,
+        };
+    
+        await transporter.sendMail(mailOptions);
+        return true;
+      }
 
+      //reset password
+      async resetPassword(resetToken: string, newPassword: string): Promise<boolean> {
+        const user = await this.usersRepo.findOne({where:{ resetPasswordToken: resetToken }});
+        if (!user) {
+          throw new Error('Invalid token');
+        }
+    
+        const resetExpires = moment(user.resetPasswordExpires);
+        if (moment().isAfter(resetExpires)) {
+          throw new Error('Token expired');
+        }
+    
+        user.password = newPassword;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpires = null;
+        await this.usersRepo.save(user);
+    
+        return true;
+      }
+      
       async setRefreshToken(id:number, refreshToken: string) {
         const user = await this.usersRepo.findOne({where:{id}});
     

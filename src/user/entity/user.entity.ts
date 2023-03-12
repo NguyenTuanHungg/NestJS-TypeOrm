@@ -19,6 +19,13 @@ export class User{
     order:Order[];
     @OneToMany(()=>Cart,cart=>cart.user)
     cart:Cart[]
+
+    @Column({ nullable: true })
+    resetPasswordToken: string;
+  
+    @Column({ nullable: true })
+    resetPasswordExpires: Date;
+    
     @Column({type:'enum',enum:Role,default:Role.User})
     roles:Role
     
