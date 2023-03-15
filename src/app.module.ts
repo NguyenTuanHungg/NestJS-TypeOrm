@@ -13,6 +13,8 @@ import { OrderModule } from './order/order.module';
 import { Order } from './order/Entity/order.entity';
 
 import {AccessControlModule} from 'nest-access-control'
+import { CategoryModule } from './category/category.module';
+import { Category } from './category/entity/category.entity';
 
 @Module({
   imports: [
@@ -23,13 +25,14 @@ import {AccessControlModule} from 'nest-access-control'
       username: 'postgres',
       password: 'hunghn2001',
       database: 'NestJS',
-      entities: [Book,User,Cart,Order],
+      entities: [Book,User,Cart,Order,Category],
       synchronize: true,
     }),
     BookModule,
     UserModule,
     CartModule,
     OrderModule,
+    CategoryModule,
    
    
   ],

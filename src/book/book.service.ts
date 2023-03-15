@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository,DeleteResult,UpdateResult, FindOneOptions } from 'typeorm';
 import { Book } from './entity/book.entity';
 import {createBookDto} from './dto/create-book.dto'
+import {Category} from '../category/entity/category.entity'
 @Injectable()
 export class BookService {
     constructor(
@@ -10,14 +11,18 @@ export class BookService {
     ){}
     async findAll(page: number = 1,
         limit: number = 13): Promise<{books:Book[];total:number}>{
+            
             const [books, total] = await this.bookRepo.findAndCount({
                 take: limit,
                 skip: (page - 1) * limit,
+                relations: ['category'] ,
+                select:['id','title','price','description','categoryId']
+                
               });
+            
               return {
                 books,
-                total
-                
+                total   
               };
     }
     async create(createBookDto:createBookDto): Promise<Book>{
@@ -25,11 +30,18 @@ export class BookService {
         return res;
     }
     async findById(id:number): Promise<Book>{
-        const book:Book=await this.bookRepo.findOne({where:{id}})
-        if(!book){
-            throw new NotFoundException('not found book')
-        }
-        return book;
+        const book = await this.bookRepo
+        .createQueryBuilder('book')
+        .leftJoinAndSelect('book.category', 'category')
+        .select(['book.id', 'book.title', 'book.author','book.price','book.publishedYear','book.description', 'category.name'])
+        .where('book.id = :id', { id })
+        .getOne();
+
+        if (!book) {
+        throw new NotFoundException(`Book with ID "${id}" not found`);
+     }
+
+         return book;
     }
     // Update
     async UpdateById(id:number,book:Book): Promise<UpdateResult>{
