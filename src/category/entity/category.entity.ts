@@ -1,5 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn,OneToMany,JoinColumn } from 'typeorm';
-import {Book} from '../../book/entity/book.entity'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { Book } from '../../book/entity/book.entity';
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn()
@@ -11,8 +17,7 @@ export class Category {
   @Column()
   description: string;
 
-  @OneToMany(() => Book,book=>book.category)
+  @OneToMany(() => Book, (book) => book.category)
   @JoinColumn()
-   book:Book
-
+  book: Book;
 }

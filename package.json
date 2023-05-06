@@ -30,6 +30,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "@types/nodemailer": "^6.4.7",
     "bcrypt": "^5.1.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.10.0",
     "nest-access-control": "^2.2.0",
     "passport": "^0.6.0",
