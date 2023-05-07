@@ -1,7 +1,15 @@
 import { IsNumber } from '@nestjs/class-validator';
 import { Order } from 'src/order/Entity/order.entity';
-import { Column, Entity, PrimaryGeneratedColumn,ManyToOne,JoinColumn,OneToMany,IsNull} from 'typeorm';
-import {Cart} from '../..//cart/entity/cart.entity'
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  IsNull,
+} from 'typeorm';
+import { Cart } from '../..//cart/entity/cart.entity';
 import { Category } from 'src/category/entity/category.entity';
 
 @Entity()
@@ -25,11 +33,10 @@ export class Book {
   publishedYear: number;
 
   @JoinColumn()
-  @ManyToOne(() => Category, category => category.book)
+  @ManyToOne(() => Category, (category) => category.book)
   category: Category;
 
-  @OneToMany(() => Cart,cart=>cart.book)
+  @OneToMany(() => Cart, (cart) => cart.book)
   @JoinColumn()
-  cart:Cart
-  
+  cart: Cart;
 }

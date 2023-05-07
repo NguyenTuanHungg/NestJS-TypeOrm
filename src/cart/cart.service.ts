@@ -18,6 +18,7 @@ export class CartService {
     const cart = await this.CartRepo.createQueryBuilder('cart')
       .leftJoinAndSelect('cart.book', 'book')
       .leftJoinAndSelect('cart.user', 'user')
+      .leftJoinAndSelect('book.category', 'category')
       .select([
         'book.id',
         'book.title',
@@ -26,6 +27,7 @@ export class CartService {
         'book.publishedYear',
         'book.description',
         'category.name',
+        'cart.quantity',
       ])
       .where('user.id = :userId', { userId })
       .getMany();
