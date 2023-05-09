@@ -23,9 +23,15 @@ export class OrderService {
   ) {}
 
   async placeOrder(createOrderDto: CreateOrderDto, totalPrice: number) {
-    const { quantity, userId, bookId, name, address, phone } = createOrderDto;
+    const { quantity, userId, bookId, name, address, phone, voucher } =
+      createOrderDto;
 
     const book: Book = await this.bookRepo.findOne({ where: { id: bookId } });
+
+    // Giảm giá nếu có voucher
+    if (voucher) {
+      totalPrice = (totalPrice * (100 - voucher)) / 100;
+    }
 
     totalPrice = book.price * quantity;
     const order = new Order();

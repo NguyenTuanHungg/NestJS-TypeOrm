@@ -181,14 +181,6 @@ export class UserService {
     throw new UnauthorizedException({ message: 'Incorrect password' });
   }
 
-  verifyRefreshToken(refreshToken: string) {
-    const decodedId = this.jwtService.verify(refreshToken, {
-      secret: process.env.JWT_REFRESH_SECRET,
-    });
-
-    return decodedId;
-  }
-
   async removeRefreshToken(id: number) {
     const user = await this.usersRepo.findOne({ where: { id } });
 

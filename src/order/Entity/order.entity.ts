@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne,JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../..//user/entity/user.entity';
 import { Book } from 'src/book/entity/book.entity';
 @Entity()
@@ -8,12 +14,14 @@ export class Order {
 
   @Column()
   bookId: number;
+
   @ManyToOne(() => Book)
   @JoinColumn()
-  book:Book
+  book: Book;
+
   @Column()
   quantity: number;
-  
+
   @Column()
   name: string;
 
@@ -31,10 +39,11 @@ export class Order {
 
   @Column()
   totalPrice: number;
-  
+
   @Column()
   userId: number;
-  @ManyToOne(() => User, user => user.order)
+
+  @ManyToOne(() => User, (user) => user.order)
   @JoinColumn()
   user: User;
 }

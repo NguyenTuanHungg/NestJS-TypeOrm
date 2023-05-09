@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {
   Repository,
   DeleteResult,
@@ -9,7 +10,7 @@ import {
   Post,
   Body,
   Param,
-  Put,
+  Get,
   Patch,
   Session,
   UseGuards,
@@ -26,6 +27,7 @@ import { User } from './entity/user.entity';
 import { ChangePassword } from './dto/chang-password.dto';
 import { Cart } from 'src/cart/entity/cart.entity';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -48,6 +50,16 @@ export class UserController {
     });
 
     return result;
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin() {}
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  googleLoginCallback(@Req() req: any) {
+    return req.user;
   }
 
   @UseGuards(JwtAuthGuard)

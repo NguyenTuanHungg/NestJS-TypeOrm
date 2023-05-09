@@ -18,6 +18,5 @@ export class Category {
   description: string;
 
   @OneToMany(() => Book, (book) => book.category)
-  @JoinColumn()
   book: Book;
 }
