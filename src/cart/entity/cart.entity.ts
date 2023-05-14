@@ -17,14 +17,9 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @IsInt()
-  @ManyToOne(() => User, (user) => user.cart)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.order)
+  @JoinColumn({ name: 'userId' })
   user: User;
-
-  @IsInt()
-  @Column()
-  userId: number;
 
   @ManyToOne(() => Book, (book) => book.cart)
   @JoinColumn()

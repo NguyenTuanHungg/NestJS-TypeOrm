@@ -40,10 +40,7 @@ export class Order {
   @Column()
   totalPrice: number;
 
-  @Column()
-  userId: number;
-
   @ManyToOne(() => User, (user) => user.order)
-  @JoinColumn()
+  @JoinColumn({ name: 'userId' })
   user: User;
 }

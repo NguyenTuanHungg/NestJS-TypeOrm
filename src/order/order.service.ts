@@ -22,9 +22,12 @@ export class OrderService {
     private readonly bookRepo: Repository<Book>,
   ) {}
 
-  async placeOrder(createOrderDto: CreateOrderDto, totalPrice: number) {
-    const { quantity, userId, bookId, name, address, phone, voucher } =
-      createOrderDto;
+  async placeOrder(
+    createOrderDto: CreateOrderDto,
+    totalPrice: number,
+    user: User,
+  ) {
+    const { quantity, bookId, name, address, phone, voucher } = createOrderDto;
 
     const book: Book = await this.bookRepo.findOne({ where: { id: bookId } });
 
@@ -42,7 +45,7 @@ export class OrderService {
     order.totalPrice = totalPrice;
     order.status = 'pending';
     order.createdAt = new Date();
-    order.user = { id: userId } as User;
+    order.user = user;
     order.book = { id: bookId } as Book;
 
     await this.orderRepo.save(order);

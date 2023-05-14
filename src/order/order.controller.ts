@@ -16,6 +16,8 @@ import { CreateOrderDto } from '..//order/dto/create-order.dto';
 import { JwtAuthGuard } from '..//user/auth/jwt-auth.guard';
 import { UpdateOrderDto } from './/dto/update-order.dto';
 import { DeleteResult } from 'typeorm';
+import { GetAuthUser } from 'src/user/decorator/user.decorator';
+
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -24,10 +26,12 @@ export class OrderController {
   async placeOrder(
     @Body() createOrderDto: CreateOrderDto,
     totalPrice: number,
+    @GetAuthUser() user: User,
   ): Promise<Order> {
     const order = await this.orderService.placeOrder(
       createOrderDto,
       totalPrice,
+      user,
     );
     return order;
   }

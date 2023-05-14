@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '..//user/auth/jwt-auth.guard';
 import { Roles } from 'src/user/role/roles.decorator';
 import { Role } from 'src/user/role/role.enum';
 import { RolesGuard } from 'src/user/role/role.guard';
+import { GetAuthUser } from 'src/user/decorator/user.decorator';
 
 @Controller('cart')
 export class CartController {
@@ -35,8 +36,9 @@ export class CartController {
   async addToCart(
     @Body() params: CreateCartDto,
     totalPrice: number,
+    @GetAuthUser() user: User,
   ): Promise<void> {
-    this.cartService.createCart(params, totalPrice);
+    this.cartService.createCart(params, totalPrice, user);
   }
 
   @UseGuards(JwtAuthGuard)

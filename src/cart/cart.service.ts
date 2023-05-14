@@ -39,14 +39,18 @@ export class CartService {
     return { cart, total };
   }
 
-  async createCart(cartDto: CreateCartDto, totalPrice: number): Promise<Cart> {
-    const { quantity, bookId, userId } = cartDto;
+  async createCart(
+    cartDto: CreateCartDto,
+    totalPrice: number,
+    user: User,
+  ): Promise<Cart> {
+    const { quantity, bookId } = cartDto;
 
     const book: Book = await this.bookRepo.findOne({ where: { id: bookId } });
 
     totalPrice = book.price * quantity;
     const cartItem: Cart = await this.CartRepo.findOne({
-      where: { book, user: { id: userId } },
+      where: { book, user },
       relations: ['book'],
     });
 
@@ -54,7 +58,7 @@ export class CartService {
       const cart = new Cart();
       cart.totalPrice = totalPrice;
       cart.quantity = 1;
-      cart.user = { id: userId } as User;
+      cart.user = user;
       cart.book = { id: bookId } as Book;
       return this.CartRepo.save(cart);
     } else {

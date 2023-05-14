@@ -47,6 +47,10 @@ export class UserService {
     return this.generateTokens(id);
   }
 
+  async findById(id: number): Promise<User | undefined> {
+    return this.usersRepo.findOne({ where: { id } });
+  }
+
   // Change Password
   async changePassword(
     params: ChangePassword,
