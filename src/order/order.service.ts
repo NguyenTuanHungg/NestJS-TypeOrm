@@ -55,7 +55,6 @@ export class OrderService {
       orderItem.book = { id: bookId } as Book;
       orderItem.quantity = item.quantity;
       orderItem.subtotal = item.quantity * item.book.price;
-      orderItem.user = user;
       // Tính toán subtotal
       return orderItem;
     });
