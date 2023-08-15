@@ -17,11 +17,11 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.order)
+  @ManyToOne(() => User, (user) => user.cart)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Book, (book) => book.cart)
+  @OneToOne(() => Book, (book) => book.cart)
   @JoinColumn()
   book: Book;
 

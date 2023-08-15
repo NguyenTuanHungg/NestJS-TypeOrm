@@ -4,23 +4,16 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../..//user/entity/user.entity';
 import { Book } from 'src/book/entity/book.entity';
+import { OrderItem } from './order-item.entity';
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  bookId: number;
-
-  @ManyToOne(() => Book)
-  @JoinColumn()
-  book: Book;
-
-  @Column()
-  quantity: number;
 
   @Column()
   name: string;
@@ -39,6 +32,10 @@ export class Order {
 
   @Column()
   totalPrice: number;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  orderItems: OrderItem[];
+
 
   @ManyToOne(() => User, (user) => user.order)
   @JoinColumn({ name: 'userId' })

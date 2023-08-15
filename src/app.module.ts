@@ -6,15 +6,16 @@ import { Connection } from 'typeorm';
 import { BookModule } from './book/book.module';
 import { Book } from './book/entity/book.entity';
 import { UserModule } from './user/user.module';
-import {User} from './user/entity/user.entity'
+import { User } from './user/entity/user.entity'
 import { CartModule } from './cart/cart.module';
 import { Cart } from './cart/entity/cart.entity';
 import { OrderModule } from './order/order.module';
 import { Order } from './order/Entity/order.entity';
 
-import {AccessControlModule} from 'nest-access-control'
+import { AccessControlModule } from 'nest-access-control'
 import { CategoryModule } from './category/category.module';
 import { Category } from './category/entity/category.entity';
+import { OrderItem } from './order/Entity/order-item.entity';
 
 @Module({
   imports: [
@@ -23,9 +24,9 @@ import { Category } from './category/entity/category.entity';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'hunghn2001',
-      database: 'NestJS',
-      entities: [Book,User,Cart,Order,Category],
+      password: '123456',
+      database: 'nestjs',
+      entities: [Book, User, Cart, Order, Category, OrderItem],
       synchronize: true,
     }),
     BookModule,
@@ -33,12 +34,12 @@ import { Category } from './category/entity/category.entity';
     CartModule,
     OrderModule,
     CategoryModule,
-   
-   
+
+
   ],
   controllers: [AppController],
   providers: [AppService,
-   
+
   ],
 })
-export class AppModule {}
+export class AppModule { }

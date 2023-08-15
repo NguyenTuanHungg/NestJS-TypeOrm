@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToMany,
   IsNull,
+  OneToOne,
 } from 'typeorm';
 import { Cart } from '../..//cart/entity/cart.entity';
 import { Category } from 'src/category/entity/category.entity';
@@ -36,7 +37,7 @@ export class Book {
   @ManyToOne(() => Category, (category) => category.book)
   category: Category;
 
-  @OneToMany(() => Cart, (cart) => cart.book)
+  @OneToOne(() => Cart, (cart) => cart.book)
   @JoinColumn()
   cart: Cart;
 }

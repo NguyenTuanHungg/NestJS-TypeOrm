@@ -22,7 +22,4 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  constructor(dto: Partial<CreateUserDto>) {
-    Object.assign(this, dto);
-  }
 }

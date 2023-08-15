@@ -27,7 +27,7 @@ import { Roles } from 'src/user/role/roles.decorator';
 import { RolesGuard } from 'src/user/role/role.guard';
 @Controller('book')
 export class BookController {
-  constructor(private bookService: BookService) {}
+  constructor(private bookService: BookService) { }
 
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -72,8 +72,8 @@ export class BookController {
     return this.bookService.deleteById(id);
   }
 
-  @Get('/search')
-  async searchByName(@Query('title') title: string) {
-    return this.bookService.searchByName(title);
-  }
+  // @Get('/search')
+  // async searchByName(@Query('title') title: string) {
+  //   return this.bookService.searchByName(title);
+  // }
 }

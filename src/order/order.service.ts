@@ -13,6 +13,7 @@ import { BookService } from '../book/book.service';
 import { User } from '../user/entity/user.entity';
 import { Book } from '..//book/entity/book.entity';
 import { UpdateOrderDto } from './/dto/update-order.dto';
+import { OrderItem } from './Entity/order-item.entity';
 @Injectable()
 export class OrderService {
   constructor(
@@ -20,7 +21,9 @@ export class OrderService {
     private readonly orderRepo: Repository<Order>,
     @InjectRepository(Book)
     private readonly bookRepo: Repository<Book>,
-  ) {}
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
+  ) { }
 
   async placeOrder(
     createOrderDto: CreateOrderDto,
@@ -36,34 +39,46 @@ export class OrderService {
       totalPrice = (totalPrice * (100 - voucher)) / 100;
     }
 
-    totalPrice = book.price * quantity;
     const order = new Order();
-    order.address = address;
-    order.name = name;
-    order.phone = phone;
-    order.quantity = quantity;
-    order.totalPrice = totalPrice;
+    order.name = createOrderDto.name;
+    order.address = createOrderDto.address;
+    order.phone = createOrderDto.phone;
     order.status = 'pending';
-    order.createdAt = new Date();
+    order.totalPrice = 0;
     order.user = user;
-    order.book = { id: bookId } as Book;
 
-    await this.orderRepo.save(order);
 
-    return order;
-  }
-
-  async getOrders(userId: number): Promise<{ order: Order[]; total: number }> {
-    const order = await this.orderRepo.find({
-      where: { user: { id: userId } },
-      relations: ['book'],
+    const savedOrder = await this.orderRepo.save(order);
+    const orderItems = createOrderDto.items.map((item) => {
+      const orderItem = new OrderItem();
+      orderItem.order = savedOrder;
+      orderItem.book = { id: bookId } as Book;
+      orderItem.quantity = item.quantity;
+      orderItem.subtotal = item.quantity * item.book.price;
+      orderItem.user = user;
+      // Tính toán subtotal
+      return orderItem;
     });
 
-    const total = order.reduce((acc, orderItem) => {
-      return acc + orderItem.book.price * orderItem.quantity;
-    }, 0);
+    await this.orderItemRepository.save(orderItems);
 
-    return { order, total };
+    // Tính toán và cập nhật lại totalPrice cho entity Order
+    totalPrice = orderItems.reduce((total, item) => total + item.subtotal, 0);
+    savedOrder.totalPrice = totalPrice;
+    await this.orderRepo.save(savedOrder);
+
+    return savedOrder;
+  }
+
+  async getOrders(userId: number): Promise<Order[]> {
+    const order = await this.orderRepo.find({
+      where: { user: { id: userId } },
+      relations: ['orderItems'],
+    });
+
+
+
+    return order;
   }
 
   async removeOrder(id: number): Promise<DeleteResult> {

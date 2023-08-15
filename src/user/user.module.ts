@@ -17,11 +17,10 @@ import { GoogleStrategy } from './strategy/google.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '90s' },
     }),
   ],
 
   controllers: [UserController],
   providers: [UserService, JwtStrategy, RolesGuard, GoogleStrategy],
 })
-export class UserModule {}
+export class UserModule { }

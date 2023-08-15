@@ -8,6 +8,8 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Book } from 'src/book/entity/book.entity';
 import { User } from 'src/user/entity/user.entity';
+import { OrderItemDto } from './order-item.dto';
+import { Type } from '@nestjs/common';
 export class CreateOrderDto {
   @ApiProperty()
   bookId: number;
@@ -35,4 +37,7 @@ export class CreateOrderDto {
 
   @IsNumber()
   voucher?: number;
+
+
+  items: OrderItemDto[];
 }

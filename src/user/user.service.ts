@@ -20,7 +20,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
   //sign up
   async signUp(createUserDto: CreateUserDto): Promise<User> {
     if (
@@ -41,7 +41,7 @@ export class UserService {
     return newUser;
   }
   //sign in
-  async signIn(loginDto: LoginDto) {
+  async signIn(loginDto: LoginDto,) {
     const { id } = await this.validateUser(loginDto);
 
     return this.generateTokens(id);
@@ -75,7 +75,7 @@ export class UserService {
   }
   // send email
   async sendPasswordResetEmail(email: string): Promise<boolean> {
-    const user = await this.usersRepo.findOne({ where: { email } });
+    const user: User = await this.usersRepo.findOne({ where: { email } });
     if (!user) {
       throw new Error('User not found');
     }
@@ -136,6 +136,36 @@ export class UserService {
     return true;
   }
 
+
+  async generateTokens(id: number) {
+    const payload = { id };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: '30m',
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '30d',
+    });
+    await this.setRefreshToken(id, refreshToken);
+
+    // await this.usersRepo.update(id, { refreshToken });
+
+    return { accessToken, refreshToken };
+  }
+
+  async useRefreshToken(refreshToken: string) {
+    try {
+      const decoded = this.jwtService.verify(refreshToken);
+      const user = await this.usersRepo.findOne(decoded.id);
+
+      if (user && user.refreshToken === refreshToken) {
+        return this.generateTokens(decoded.id);
+      }
+    } catch (error) {
+      throw new Error('Invalid refresh token');
+    }
+  }
+
   async setRefreshToken(id: number, refreshToken: string) {
     const user = await this.usersRepo.findOne({ where: { id } });
 
@@ -143,23 +173,6 @@ export class UserService {
       ...user,
       refreshToken,
     });
-  }
-
-  async generateTokens(id: number) {
-    const payload = { id };
-
-    const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_ACCESS_SECRET,
-      expiresIn: '30m',
-    });
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: '30d',
-    });
-
-    await this.setRefreshToken(id, refreshToken);
-
-    return { accessToken, refreshToken };
   }
 
   private async validateUser(loginDto: LoginDto) {

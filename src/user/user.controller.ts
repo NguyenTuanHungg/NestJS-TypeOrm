@@ -31,7 +31,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('register')
   async signUp(@Body() createUserDto: CreateUserDto) {
@@ -54,7 +54,7 @@ export class UserController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleLogin() {}
+  async googleLogin() { }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -75,6 +75,11 @@ export class UserController {
     @Body() body: ChangePassword,
   ): Promise<UpdateResult> {
     return this.userService.changePassword(body, id);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body('refreshToken') refreshToken: string) {
+    return this.userService.useRefreshToken(refreshToken);
   }
 
   @Post('forgot-password')

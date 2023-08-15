@@ -20,7 +20,7 @@ import { GetAuthUser } from 'src/user/decorator/user.decorator';
 
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
   @UseGuards(JwtAuthGuard)
   @Post()
   async placeOrder(
@@ -40,7 +40,7 @@ export class OrderController {
   @Get(':userId')
   async getOrders(
     @Param('userId') userId: number,
-  ): Promise<{ order: Order[]; total: number }> {
+  ): Promise<Order[]> {
     const orders = await this.orderService.getOrders(userId);
     return orders;
   }

@@ -13,7 +13,7 @@ import { Category } from '../category/entity/category.entity';
 export class BookService {
   constructor(
     @InjectRepository(Book) private readonly bookRepo: Repository<Book>,
-  ) {}
+  ) { }
 
   async findAll(
     page = 1,
@@ -70,12 +70,12 @@ export class BookService {
     return this.bookRepo.delete(id);
   }
 
-  async searchByName(title: string): Promise<Book[]> {
-    const queryBuilder = this.bookRepo.createQueryBuilder('Book');
+  // async searchByName(title: string): Promise<Book[]> {
+  //   const queryBuilder = this.bookRepo.createQueryBuilder('Book');
 
-    const book = await queryBuilder
-      .where(`Book.title ILIKE :title`, { title: `%${title}%` })
-      .getMany();
-    return book;
-  }
+  //   const book = await queryBuilder
+  //     .where(`Book.title ILIKE :title`, { title: `%${title}%` })
+  //     .getMany();
+  //   return book;
+  // }
 }
